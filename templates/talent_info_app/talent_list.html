@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+{% load staticfiles %}
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Talent List</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  </head>
+  <body>
+    <h1>Talent Information</h1>
+
+    <div class="djangotwo">
+
+      {% if talent_records %}
+      <table class="table">
+        <thead class="thead-dark">
+          <th>Name</th>
+          <th>Organisation</th>
+          <th>Email</th>
+          <th>Skill</th>
+          <th>Level</th>
+        </thead>
+        {% for record in talent_records%}
+        <tr>
+          <td>{{ record.name }}</td>
+          <td>{{ record.orgnisation }}</td>
+          <td>{{ record.email }}</td>
+          <td>{{ record.skill }}</td>
+          <td>{{ record.skill_level }}</td>
+        </tr>
+        {% endfor %}
+      </table>
+
+      {% else %}
+        <p>NO RECORDS FOUND!</p>
+      {% endif %}
+
+    </div>
+
+  </body>
+</html>
