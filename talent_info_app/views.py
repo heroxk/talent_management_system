@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from talent_info_app.models import Person
 from talent_info_app import forms
+import pandas as pd
 
 # Create your views here.
 
@@ -19,9 +20,35 @@ def index(request):
 
 
 def talent_list(request):
-    talent_list = Person.objects.order_by('name')
-    records_dict = {'talent_records':talent_list}
-    return render(request,'talent_info_app/talent_list.html', context=records_dict)
+    # talent_list = Person.objects.order_by('name')
+    # print(talent_list)
+    # records_dict = {'talent_records':talent_list}
+    # return render(request,'talent_info_app/talent_list.html', context=records_dict)
+
+    df_records = pd.read_csv('talent_info.csv')
+    dict_records = df_records.to_dict('index')
+
+    form = forms.SerachByName()
+
+    if request.method == 'POST':
+        form = forms.SerachByName(request.POST)
+
+        if form.is_valid():
+            print("VALIDATION SUCCESS!")
+            talent_name = form.cleaned_data['name']
+            print(f"NAME: {talent_name}")
+
+            if talent_name:
+                df_records_subset = df_records[df_records['name'].str.contains(str(talent_name))]
+            else:
+                df_records_subset = df_records
+
+            dict_records = df_records_subset.to_dict('index')
+
+    rendering_dict = {'talent_records': dict_records}
+    rendering_dict.update({'form':form})
+    return render(request,'talent_info_app/talent_list.html', context=rendering_dict)
+
 
 def info_input(request):
 

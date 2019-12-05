@@ -14,6 +14,11 @@ fakegen = Faker()
 skill_list = ['Data', 'Programming', 'Agile', 'Delivery', 'BA']
 
 def populate(N=5):
+
+    cols = ['name', 'orgnisation', 'email', 'skill', 'skill_level']
+    df_fake_person = pd.DataFrame(columns=cols)
+
+
     for entry in range(N):
 
         fake_name = fakegen.name()
@@ -22,12 +27,17 @@ def populate(N=5):
         fake_skill = random.choice(skill_list)
         fake_skill_level = random.randint(1, 5)
 
-        fake_person = Person.objects.get_or_create(name = fake_name,
-                                                   orgnisation = fake_orgnisation,
-                                                   email = fake_email,
-                                                   skill = fake_skill,
-                                                   skill_level = fake_skill_level
-                                                   )
+        df2 = pd.DataFrame([[fake_name,
+                            fake_orgnisation,
+                            fake_email,
+                            fake_skill,
+                            fake_skill_level
+                            ]], columns=cols)
+
+        df_fake_person = df_fake_person.append(df2)
+
+    df_fake_person.to_csv('talent_info.csv', index=False)
+
 
 if __name__ == '__main__':
     print("populating scripts!")

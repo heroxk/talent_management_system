@@ -11,6 +11,9 @@ class FormInfo(forms.Form):
     skill = forms.CharField()
     skill_level = forms.ChoiceField(widget=forms.Select, choices=SKILL_LEVEL_CHOICES)
 
+class SerachByName(forms.Form):
+    name = forms.CharField(required=False)
+
     # def clean(self):
     #     all_clean_data = super().clean()
     #     email = all_clean_data['email']
