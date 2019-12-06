@@ -18,6 +18,20 @@ def index(request):
 
     return render(request, 'talent_info_app/index.html')
 
+def talent_search(request):
+
+    form = forms.SerachBySkill()
+
+    if request.method == 'POST':
+        form = forms.SerachByName(request.POST)
+
+        if form.is_valid():
+            print("VALIDATION SUCCESS!")
+            skill = form.cleaned_data['skill']
+            print(f"NAME: {Skill}")
+
+        return render(request, 'talent_info_app/talent_search.html')
+
 
 def talent_list(request):
     # talent_list = Person.objects.order_by('name')

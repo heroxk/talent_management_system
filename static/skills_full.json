@@ -1,0 +1,57 @@
+[
+ {
+   "id":"1",
+   "skill_name": "Software Dev",
+   "skill_group_name": "None"
+ },
+ {
+   "id":"2",
+   "skill_name": "Cloud",
+   "skill_group_name": "None"
+ },
+ {
+   "id":"3",
+   "skill_name": "Data",
+   "skill_group_name": "None"
+ },
+ {
+   "id":"4",
+   "skill_name":"Java",
+   "skill_group_name": "Software Dev"
+ },
+ {
+   "id":"5",
+   "skill_name":".NET",
+   "skill_group_name": "Software Dev"
+ },
+ {
+   "id":"6",
+   "skill_name":"NodeJS",
+   "skill_group_name": "Software Dev"
+ },
+ {
+   "id":"7",
+   "skill_name":"Spark",
+   "skill_group_name":"Data"
+ },
+ {
+   "id":"8",
+   "skill_name":"Hadoop",
+   "skill_group_name":"Data"
+ },
+ {
+   "id":"9",
+   "skill_name":"AWS",
+   "skill_group_name":"Cloud"
+ },
+ {
+   "id":"10",
+   "skill_name":"Azure",
+   "skill_group_name":"Cloud"
+ },
+ {
+   "id":"11",
+   "skill_name":"GCP",
+   "skill_group_name":"Cloud"
+ },
+]

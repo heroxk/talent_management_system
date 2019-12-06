@@ -21,3 +21,6 @@ class SerachByName(forms.Form):
     #
     #     if email != vmail:
     #         raise forms.ValidationError("Ensure Emails Match!")
+
+class SerachBySkill(forms.Form):
+    skill = forms.Select()

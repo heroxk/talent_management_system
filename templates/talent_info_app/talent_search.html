@@ -1,0 +1,87 @@
+
+
+<!DOCTYPE html>
+<html>
+ <head>
+  <title>Webslesson Tutorial | JSON - Dynamic Dependent Dropdown List using Jquery and Ajax</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" />
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  {% load static %}
+ </head>
+ <body>
+  <br /><br />
+  <div class="container" style="width:600px;">
+    <form method="post">
+
+
+      <h2 align="center">Talents Search</h2><br /><br />
+      <select name="Skill Group" id="skillgroup" class="form-control input-lg">
+       <option value="">Select Skill Group</option>
+      </select>
+      <br />
+      <select name="Skill" id="skill" class="form-control input-lg">
+       <option value="">Select Skill</option>
+      </select>
+
+      {{form.as_p}}
+      {% csrf_token %}
+      <br />
+      <input type="submit" class="btn btn-primary" value="Submit">
+    </form>
+
+   <br />
+  </div>
+ </body>
+</html>
+
+<script>
+$(document).ready(function(){
+
+ load_json_data('skillgroup');
+
+ function load_json_data(name, parent_name)
+ {
+  console.log(parent_name)
+  var html_code = '';
+  // $.getJSON("{% static "country_state_city.json" %}", function(data){
+  $.getJSON("{% static "skills_small.json" %}", function(data){
+    console.log(data['skill_group_name'])
+   $.each(data, function(key, value){
+    if(name == 'skillgroup')
+    {
+     if(value.skill_group_name == 'None')
+     {
+      html_code += '<option value="'+value.skill_name+'">'+value.skill_name+'</option>';
+      // console.log("Skill Group")
+     }
+    }
+    else
+    {
+     if(value.skill_group_name == parent_name)
+     {
+      html_code += '<option value="'+value.skill_name+'">'+value.skill_name+'</option>';
+      // console.log("Skill")
+     }
+    }
+   });
+   console.log("There")
+   // $('#'+id).html(html_code);
+   $('#'+name).html(html_code);
+  });
+
+ }
+
+ $(document).on('change', '#skillgroup', function(){
+  var skill_group = $(this).val();
+  if(skill_group != '')
+  {
+   load_json_data('skill', skill_group);
+  }
+  else
+  {
+   $('#skill').html('<option value="">Selects Skill</option>');
+  }
+ });
+});
+</script>
