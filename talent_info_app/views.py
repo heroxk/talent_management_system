@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from talent_info_app.models import Person
 from talent_info_app import forms
+import os
 import pandas as pd
 
 # Create your views here.
@@ -20,17 +21,50 @@ def index(request):
 
 def talent_search(request):
 
-    form = forms.SerachBySkill()
+    rendering_dict = {}
+
+    df_talent_records = pd.read_csv('data/talent_info.csv')
+    df_l2_l3_mapping = pd.read_csv('data/skills_l3.csv')
+    form_search = forms.SerachBySkill()
 
     if request.method == 'POST':
-        form = forms.SerachByName(request.POST)
+        form = forms.SerachBySkill(request.POST)
+
+        print(request.body)
 
         if form.is_valid():
-            print("VALIDATION SUCCESS!")
-            skill = form.cleaned_data['skill']
-            print(f"NAME: {Skill}")
+        # if true:
 
-        return render(request, 'talent_info_app/talent_search.html')
+            print("VALIDATION SUCCESS!")
+            selected_skill = form.cleaned_data['selected_skill']
+            # skill = form['skill']
+            print(f"Selected Skill: {selected_skill}")
+
+            if len(selected_skill) > 0:
+                print(df_talent_records)
+                df_talent_records_subset = df_talent_records[df_talent_records['skill'].isin(selected_skill)]
+                df_talent_records_subset = \
+                  df_talent_records_subset.merge(df_l2_l3_mapping,
+                    how='left',
+                    left_on='skill',
+                    right_on='skill_name') \
+                    .drop(columns='skill_name') \
+                    .rename(columns={'skill_group_name':'skill_group'})
+
+                df_talent_records_subset = \
+                  df_talent_records_subset[['name', 'orgnisation', 'email', 'skill_group', 'skill', 'skill_level']]
+
+                dict_records = df_talent_records_subset.to_dict('index')
+                print(dict_records)
+
+            else:
+                dict_records = dict()
+
+            rendering_dict.update({'talent_records':dict_records})
+
+    rendering_dict.update({'form_search':form_search})
+
+    return render(request, 'talent_info_app/talent_search.html', context=rendering_dict)
 
 
 def talent_list(request):
@@ -39,7 +73,7 @@ def talent_list(request):
     # records_dict = {'talent_records':talent_list}
     # return render(request,'talent_info_app/talent_list.html', context=records_dict)
 
-    df_records = pd.read_csv('talent_info.csv')
+    df_records = pd.read_csv('data/talent_info.csv')
     dict_records = df_records.to_dict('index')
 
     form = forms.SerachByName()

@@ -11,7 +11,17 @@ from talent_info_app.models import Person
 from faker import Faker
 
 fakegen = Faker()
-skill_list = ['Data', 'Programming', 'Agile', 'Delivery', 'BA']
+skill_list = [
+  'Java',
+  '.NET',
+  'NodeJS',
+  'Spark',
+  'Hadoop',
+  'Power BI',
+  'AWS',
+  'Azure',
+  'GCP'
+]
 
 def populate(N=5):
 
@@ -36,10 +46,10 @@ def populate(N=5):
 
         df_fake_person = df_fake_person.append(df2)
 
-    df_fake_person.to_csv('talent_info.csv', index=False)
+    df_fake_person.to_csv('data/talent_info.csv', index=False)
 
 
 if __name__ == '__main__':
     print("populating scripts!")
-    populate(20)
+    populate(100)
     print("populating complete!")

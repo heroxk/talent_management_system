@@ -3,52 +3,117 @@
 <!DOCTYPE html>
 <html>
  <head>
+  {% load static %}
   <title>Webslesson Tutorial | JSON - Dynamic Dependent Dropdown List using Jquery and Ajax</title>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <link rel="stylesheet" type="text/css", href="{% static "style.css" %}">
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-  {% load static %}
  </head>
  <body>
   <br /><br />
   <div class="container" style="width:600px;">
+
+    <h2 align="center">Talents Search</h2><br /><br />
+
+    <div style="float:left;width:49%; margin-right:2%">
+      <label for="Select Skill Group">Selected skill:</label>
+    <br />
+  </div>
+
+  <div style="float:left;width:49%;margin-right:0">
+    <label for="Select Skill">Selected skill:</label>
+    <br />
+  </div>
+
+
+
+    <div style="float:left;width:49%; margin-right:2%">
+    <select name="Skill Group" id="id_skillgroup" class="form-control input-lg" multiple>
+     <option value="">Select Skill Group</option>
+    </select>
+    <br />
+  </div>
+
+  <div style="float:left;width:49%;margin-right:0">
+    <select name="Skill" id="id_skill" class="form-control input-lg" multiple>
+     <option value="">Select Skill</option>
+    </select>
+    <br />
+  </div>
+
+    <button type="button" id="id_addskill" class="btn btn-primary" >Add Skills</button>
+    <br />
+    <br />
+
     <form method="post">
-
-
-      <h2 align="center">Talents Search</h2><br /><br />
-      <select name="Skill Group" id="skillgroup" class="form-control input-lg">
-       <option value="">Select Skill Group</option>
-      </select>
-      <br />
-      <select name="Skill" id="skill" class="form-control input-lg">
-       <option value="">Select Skill</option>
-      </select>
-
-      {{form.as_p}}
+      {{form_search.as_p}}
       {% csrf_token %}
       <br />
-      <input type="submit" class="btn btn-primary" value="Submit">
-    </form>
+      <input type="button" id="id_removeskill" class="btn btn-primary" value="Remove Skills">
+      <input type="submit" id="id_submitskill" class="btn btn-primary" value="Search Talent">
 
+    </form>
    <br />
+   <br />
+   <br />
+
   </div>
+
+  <div class="container" style="width:800px;">
+    <h2 align="center">Talents List</h2><br />
+
+    <div class="table-wrapper-scroll-y my-custom-scrollbar">
+
+    {% if talent_records %}
+    <table class="table table-bordered table-striped mb-0">
+      <thead class="thead-dark">
+        <th>Name</th>
+        <th>Organisation</th>
+        <th>Email</th>
+        <th>Skill Group</th>
+        <th>Skill</th>
+        <th>Level</th>
+      </thead>
+
+    {% for k, v in talent_records.items%}
+    <tr>
+      {% for k2, v2 in v.items%}
+      <td>{{ v2 }}</td>
+      {% endfor %}
+    </tr>
+    {% endfor %}
+
+  </table>
+  {% else %}
+    <p>NO Talent FOUND!</p>
+  {% endif %}
+  </div>
+   <br />
+   <br />
+   <br />
+
+</div>
+
  </body>
 </html>
 
 <script>
 $(document).ready(function(){
 
- load_json_data('skillgroup');
+$('#id_selected_skill').html('');
+
+ load_json_data('id_skillgroup');
 
  function load_json_data(name, parent_name)
  {
   console.log(parent_name)
   var html_code = '';
   // $.getJSON("{% static "country_state_city.json" %}", function(data){
-  $.getJSON("{% static "skills_small.json" %}", function(data){
+  $.getJSON("{% static "skills.json" %}", function(data){
     console.log(data['skill_group_name'])
    $.each(data, function(key, value){
-    if(name == 'skillgroup')
+    if(name == 'id_skillgroup')
     {
      if(value.skill_group_name == 'None')
      {
@@ -58,7 +123,8 @@ $(document).ready(function(){
     }
     else
     {
-     if(value.skill_group_name == parent_name)
+     // if(value.skill_group_name in parent_name)
+     if(jQuery.inArray(value.skill_group_name, parent_name) > -1)
      {
       html_code += '<option value="'+value.skill_name+'">'+value.skill_name+'</option>';
       // console.log("Skill")
@@ -72,16 +138,71 @@ $(document).ready(function(){
 
  }
 
- $(document).on('change', '#skillgroup', function(){
+ $(document).on('change', '#id_skillgroup', function(){
   var skill_group = $(this).val();
+  console.log(skill_group)
   if(skill_group != '')
   {
-   load_json_data('skill', skill_group);
+   load_json_data('id_skill', skill_group);
   }
   else
   {
    $('#skill').html('<option value="">Selects Skill</option>');
   }
  });
+
+
+ $(document).on('click', '#id_addskill', function(){
+   var add_skills = $('#id_skill').val();
+   var existing_skills = [];
+   var html_code = '';
+
+   $('#id_selected_skill option').each(function() {
+       existing_skills.push($(this).val());
+   });
+
+   existing_skills = existing_skills.concat(add_skills)
+
+   var existing_skills = existing_skills.filter(function(elem, index, self) {
+       return index === self.indexOf(elem);
+   });
+
+   console.log(existing_skills);
+
+
+   $.each(existing_skills, function(index, value){
+     html_code += '<option value="'+value+'">'+value+'</option>';
+    });
+
+   $('#id_selected_skill').html(html_code);
+
+ });
+
+
+ $(document).on('click', '#id_removeskill', function(){
+   var remove_skills = $('#id_selected_skill').val();
+   var existing_skills = [];
+   var html_code = '';
+
+   $('#id_selected_skill option').each(function() {
+       existing_skills.push($(this).val());
+   });
+
+   console.log(existing_skills);
+   console.log(remove_skills);
+
+   existing_skills = existing_skills.filter(function(elem) {
+     return !remove_skills.includes(elem);
+   });
+
+   $.each(existing_skills, function(index, value){
+     html_code += '<option value="'+value+'">'+value+'</option>';
+    });
+
+   $('#id_selected_skill').html(html_code);
+
+ });
+
 });
+
 </script>
